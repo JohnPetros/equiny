@@ -1,12 +1,12 @@
 # PRD — Tela de Chat
 
-## 1) Visão geral
+## 1. Visão geral
 
 A tela de Chat permite que **dois donos** que deram match iniciem e mantenham uma conversa para avançar na negociação/combinação de próximos passos, com **contexto do cavalo do match** sempre acessível.
 
 ---
 
-## 2) Objetivo do produto
+## 2. Objetivo do produto
 
 * **Facilitar a primeira mensagem** após o match.
 * **Acelerar a troca de informações essenciais** (localização, disponibilidade, condições).
@@ -14,13 +14,13 @@ A tela de Chat permite que **dois donos** que deram match iniciem e mantenham um
 
 ---
 
-## 3) Público-alvo
+## 3. Público-alvo
 
 * Usuários que tiveram match e querem conversar: **donos interessados** e **donos anunciantes**.
 
 ---
 
-## 4) Regras de negócio
+## 4. Regras de negócio
 
 * **Só pode conversar quem deu match**.
 * O chat é **entre donos** (pessoa ↔ pessoa), não “com o cavalo”.
@@ -29,7 +29,7 @@ A tela de Chat permite que **dois donos** que deram match iniciem e mantenham um
 
 ---
 
-## 5) Escopo
+## 5. Escopo
 
 ### 5.1 MVP (incluído)
 
@@ -49,7 +49,7 @@ A tela de Chat permite que **dois donos** que deram match iniciem e mantenham um
 
 ---
 
-## 6) Principais cenários de uso
+## 6. Principais cenários de uso
 
 ### Cenário A — Iniciar conversa (chat vazio)
 
@@ -80,7 +80,7 @@ A tela de Chat permite que **dois donos** que deram match iniciem e mantenham um
 
 ---
 
-## 7) Estrutura da tela (UI/UX)
+## 7. Estrutura da tela (UI/UX)
 
 ### Header (topo)
 
@@ -108,7 +108,7 @@ A tela de Chat permite que **dois donos** que deram match iniciem e mantenham um
 
 ---
 
-## 8) Conteúdo e microcopy (diretrizes)
+## 8. Conteúdo e microcopy (diretrizes)
 
 * Linguagem curta, clara e objetiva.
 * Sugestões de mensagem devem incentivar ação e perguntas “de avanço”, por exemplo:
@@ -119,7 +119,7 @@ A tela de Chat permite que **dois donos** que deram match iniciem e mantenham um
 
 ---
 
-## 9) Métricas de sucesso
+## 9. Métricas de sucesso
 
 ### Métricas principais
 
@@ -135,7 +135,7 @@ A tela de Chat permite que **dois donos** que deram match iniciem e mantenham um
 
 ---
 
-## 10) Critérios de aceite (MVP)
+## 10. Critérios de aceite (MVP)
 
 1. Usuário com match consegue **abrir o chat** e **enviar mensagem de texto**.
 2. Chat vazio mostra **contexto do cavalo** e **sugestões de mensagem**.
