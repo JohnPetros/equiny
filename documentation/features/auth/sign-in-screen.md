@@ -1,10 +1,11 @@
-## PRD — Tela de Sign In
+## PRD — Tela de Sign In (Autenticação)
 
 ### 1. Objetivo
 
 Permitir que o usuário entre no Equiny de forma rápida e confiável usando **e-mail e senha**, e conduzi-lo ao próximo passo do onboarding: **Criar Cavalo** (caso ainda não tenha concluído essa etapa).
 
 ---
+crie o prompt dessa tela para o Google Stitch
 
 ### 2. Contexto e Premissas
 
