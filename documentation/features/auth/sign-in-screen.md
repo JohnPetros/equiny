@@ -1,50 +1,232 @@
-## PRD — Tela de Sign In (Autenticação)
+# PRD — Tela de Sign In (Autenticação)
 
-### 1. Objetivo
+### 1. Visão Geral
 
-Permitir que o usuário entre no Equiny de forma rápida e confiável usando **e-mail e senha**, e conduzi-lo ao próximo passo do onboarding: **Criar Cavalo** (caso ainda não tenha concluído essa etapa).
+A **Tela de Sign In** permite que o usuário acesse o Equiny de forma rápida e confiável usando **e-mail e senha** (único método no MVP).
+O problema que resolve é o acesso simples à conta, com **validações claras**, **feedback de erro**, e **direcionamento correto** após o login.
+O objetivo principal é **permitir login com baixa fricção** e conduzir o usuário para a etapa de ativação correta:
+
+* Se ainda não criou cavalo → **Criar Cavalo**
+* Se já criou cavalo → **Feed/Home**
+
+**Premissas**
+
+* Autenticação no MVP é **exclusivamente e-mail + senha**
+* Existe fluxo de cadastro com **nome do dono + e-mail + senha**
+* **Não haverá recuperação de senha** no MVP
+
+**Resumo do que entendi**
+
+* Esta tela é o ponto de entrada do app para usuários novos e recorrentes
+* O sucesso do login está diretamente ligado à ativação (Criar Cavalo)
+
+**Sugestões rápidas**
+
+* Manter erro de credenciais **genérico** (segurança) e diferenciar apenas erro de rede/servidor
+* Garantir que “Criar conta” seja bem visível para usuários novos
+
+**Posso registrar essa versão ou deseja ajustar algo?**
 
 ---
-crie o prompt dessa tela para o Google Stitch
 
-### 2. Contexto e Premissas
+### 2. Requisitos
 
-* Autenticação no MVP é **exclusivamente por e-mail + senha**.
-* O **cadastro** existe e solicita **nome do dono + e-mail + senha**.
-* **Não haverá recuperação de senha** no MVP.
-* Após entrar, o usuário deve ser direcionado para **Criar Cavalo** como primeira etapa de ativação.
+*Liste das funcionalidades (MVP). Não use IDs numéricos. Use checkboxes.*
+
+#### Autenticar com e-mail e senha
+
+* [ ] **Login com e-mail e senha**
+
+**Descrição:** Usuário informa e-mail e senha e realiza autenticação para entrar no app.
+
+##### Regras de Negócio
+
+* **Método de autenticação:** apenas e-mail + senha no MVP.
+* **Envio de login:** só enviar quando campos estiverem válidos.
+* **Resposta de autenticação:** em sucesso, o app determina o próximo destino com base no status “Criou Cavalo”.
+
+##### Regras de UI/UX (se houver)
+
+* **Campos:** E-mail (teclado apropriado), Senha (mascarada por padrão).
+* **CTA primário:** “Entrar”.
+* **CTA secundário:** “Criar conta”.
+* **Feedback:** exibir erros abaixo dos campos e/ou como mensagem global.
+* **Performance:** mostrar estado de carregamento durante tentativa.
+* **Segurança:** não detalhar se foi e-mail ou senha que falhou (mensagem genérica).
+* **Acessibilidade:** labels claros, foco correto e mensagens compreensíveis.
 
 ---
 
-### 3. Público-alvo
+#### Validação básica do formulário
 
-* Usuários novos que acabaram de instalar o app.
-* Usuários recorrentes que desejam retomar uso do app.
+* [ ] **Validação de e-mail e senha**
+
+**Descrição:** Impedir envio inválido e guiar o usuário com mensagens claras.
+
+##### Regras de Negócio
+
+* **E-mail válido:** deve ter formato válido (ex.: conter “@” e domínio).
+* **Senha obrigatória:** não pode estar vazia.
+* **Bloqueio de envio:** impedir tentativa até que os requisitos mínimos sejam atendidos.
+
+##### Regras de UI/UX (se houver)
+
+* **Mensagens de validação:**
+
+  * “Informe um e-mail válido.”
+  * “Informe sua senha.”
+* **Estados do botão:** “Entrar” desabilitado quando inválido ou em loading.
 
 ---
 
-### 4. Problema do Usuário
+#### Mostrar/ocultar senha
 
-* “Quero acessar minha conta de forma simples e sem confusão.”
-* “Quero continuar de onde parei e começar a usar o app (criar cavalo e seguir).”
+* [ ] **Toggle de visibilidade da senha**
+
+**Descrição:** Permitir alternar senha entre mascarada e visível.
+
+##### Regras de Negócio
+
+* **Estado default:** senha mascarada ao abrir a tela.
+* **Persistência:** não é necessário persistir escolha entre sessões (MVP).
+
+##### Regras de UI/UX (se houver)
+
+* **Controle:** ícone no campo de senha (olho/olho riscado).
+* **Acessibilidade:** controle com rótulo acessível (ex.: “Mostrar senha / Ocultar senha”).
 
 ---
 
-### 5. Escopo
+#### Estados de carregamento
 
-#### Dentro do escopo (in-scope)
+* [ ] **Loading e prevenção de múltiplos envios**
 
-* Campos de entrada: **E-mail** e **Senha**
-* Ações: **Entrar** e **Criar conta**
-* Controle de usabilidade: **Mostrar/ocultar senha**
-* Mensagens de erro claras (ex.: credenciais inválidas, falha de conexão)
-* Estados de carregamento (ex.: botão “Entrar” desabilitado durante envio)
-* Direcionamento pós-login:
+**Descrição:** Informar processamento e evitar taps repetidos.
 
-  * **Se ainda não criou cavalo → Criar Cavalo**
-  * **Se já criou cavalo → Feed** (ou home principal do app)
+##### Regras de Negócio
 
-#### Fora do escopo (out-of-scope)
+* **Durante autenticação:** bloquear reenvio.
+* **Finalização:** liberar o botão ao concluir sucesso ou falha.
+
+##### Regras de UI/UX (se houver)
+
+* **Botão “Entrar”:** desabilitado durante envio.
+* **Indicador:** spinner no botão ou indicador de progresso.
+
+---
+
+#### Tratamento de falhas
+
+* [ ] **Mensagens de erro para credenciais e falhas de rede**
+
+**Descrição:** Informar falhas sem confundir o usuário.
+
+##### Regras de Negócio
+
+* **Credenciais inválidas:** exibir mensagem genérica.
+* **Rede/servidor:** exibir mensagem de tentativa novamente.
+
+##### Regras de UI/UX (se houver)
+
+* **Microcopy:**
+
+  * Credenciais inválidas: “E-mail ou senha inválidos.”
+  * Erro geral: “Não foi possível entrar. Tente novamente.”
+* **Recuperação:** permitir tentar novamente sem reiniciar o app.
+
+---
+
+#### Redirecionamento pós-login
+
+* [ ] **Direcionamento conforme status “Criar Cavalo”**
+
+**Descrição:** Após autenticar, conduzir usuário para o passo correto do onboarding/uso.
+
+##### Regras de Negócio
+
+* **Condição:** verificar se o usuário concluiu “Criar Cavalo”.
+* **Destino:**
+
+  * Não concluiu → Criar Cavalo
+  * Concluiu → Feed/Home
+
+##### Regras de UI/UX (se houver)
+
+* **Transição:** navegação direta após sucesso (sem telas intermediárias no MVP).
+* **Feedback:** evitar “tela em branco”; manter loading até navegar.
+
+---
+
+#### Acesso ao cadastro
+
+* [ ] **Entrada para “Criar conta”**
+
+**Descrição:** Usuário pode ir para a tela de cadastro a partir do login.
+
+##### Regras de Negócio
+
+* **Navegação:** abrir tela de cadastro existente.
+
+##### Regras de UI/UX (se houver)
+
+* **CTA secundário:** “Criar conta” visível sem rolagem.
+* **Hierarquia:** CTA primário “Entrar” com maior destaque.
+
+---
+
+**Resumo do que entendi**
+
+* Requisitos cobrem: login, validação, toggle de senha, loading, erros, redirecionamento e acesso ao cadastro.
+
+**Sugestões rápidas**
+
+* Se possível, registrar evento de analytics por tipo de erro (credenciais vs rede) para métricas
+* Garantir que o CTA primário fique acima do teclado (em telas menores)
+
+**Posso registrar essa versão ou deseja ajustar algo?**
+
+---
+
+### 3. Fluxo de Usuário (User Flow)
+
+🚧 Em construção
+
+**Fluxo: Entrar no Equiny**
+
+1. O usuário acessa a tela **Entrar**.
+2. O usuário preenche **E-mail** e **Senha**.
+3. O usuário toca em **Entrar**.
+4. O sistema valida o formulário(ões):
+
+   * **Sucesso:** autentica e verifica status de ativação.
+   * **Falha (form):** mostra validação (“Informe um e-mail válido.” / “Informe sua senha.”).
+   * **Falha (credenciais):** mostra “E-mail ou senha inválidos.”
+   * **Falha (rede/servidor):** mostra “Não foi possível entrar. Tente novamente.”
+5. Em sucesso, o sistema direciona:
+
+   * **Não criou cavalo:** vai para **Criar Cavalo**
+   * **Já criou cavalo:** vai para **Feed/Home**
+
+**Fluxo: Ir para Criar conta**
+
+1. O usuário acessa a tela **Entrar**.
+2. O usuário toca em **Criar conta**.
+3. O sistema abre a **Tela de Cadastro**.
+
+**Resumo do que entendi**
+
+* Dois fluxos principais: login e navegação para cadastro.
+
+**Sugestões rápidas**
+
+* Se houver teclado aberto, garantir que a UI não esconda “Entrar”
+* Considerar “Enter/Go” no teclado para disparar login quando válido
+
+**Posso registrar essa versão ou deseja ajustar algo?**
+
+---
+
+### 4. Fora do Escopo (Out of Scope)
 
 * Recuperação de senha (“Esqueci minha senha”)
 * Login social (Google/Apple)
@@ -53,104 +235,3 @@ crie o prompt dessa tela para o Google Stitch
 * Multi-perfil/contas compartilhadas
 
 ---
-
-### 6. Requisitos Funcionais
-
-1. **Entrar com e-mail e senha**
-
-   * Usuário informa e-mail e senha e toca em “Entrar”.
-   * Se sucesso: prossegue para o próximo passo adequado (ver requisito 6).
-
-2. **Validação básica de formulário**
-
-   * E-mail deve aceitar formato válido (ex.: contém “@” e domínio).
-   * Senha não pode estar vazia.
-   * Se inválido: impedir envio e informar o usuário de forma clara.
-
-3. **Mostrar/ocultar senha**
-
-   * Usuário pode alternar visualização da senha.
-
-4. **Estados de carregamento**
-
-   * Durante tentativa de login:
-
-     * Botão “Entrar” fica desabilitado
-     * Exibir indicador de carregamento
-
-5. **Tratamento de falha de login**
-
-   * Se credenciais inválidas: exibir mensagem genérica (“E-mail ou senha inválidos.”)
-   * Se erro de rede/servidor: mensagem (“Não foi possível entrar. Tente novamente.”)
-
-6. **Redirecionamento pós-login**
-
-   * Se usuário ainda não concluiu “Criar Cavalo”: direcionar para **Criar Cavalo**
-   * Caso contrário: direcionar para a tela inicial do app
-
-7. **Acesso ao Cadastro**
-
-   * Link/botão “Criar conta” na tela de login que leva para a tela de cadastro.
-
----
-
-### 7. Requisitos de Conteúdo (microcopy)
-
-* Título: “Entrar”
-* Campo e-mail: “E-mail”
-* Campo senha: “Senha”
-* CTA primário: “Entrar”
-* CTA secundário: “Criar conta”
-* Mensagens:
-
-  * Credenciais inválidas: “E-mail ou senha inválidos.”
-  * Erro geral: “Não foi possível entrar. Tente novamente.”
-  * Validação e-mail: “Informe um e-mail válido.”
-  * Validação senha: “Informe sua senha.”
-
-> Nota importante de produto (por não haver reset):
-
-* No cadastro (não nesta tela), incluir aviso: “Guarde sua senha — ainda não temos recuperação no MVP.”
-
----
-
-### 8. Requisitos de UX
-
-* Layout limpo, com foco no CTA principal.
-* Teclado apropriado para e-mail (ex.: “@” facilitado).
-* Botão “Entrar” sempre visível sem rolagem em telas comuns.
-* Acessibilidade:
-
-  * Labels claros
-  * Estados de erro visíveis e compreensíveis
-  * Tamanho de toque adequado para botões
-
----
-
-### 9. Métricas de Sucesso
-
-* **Taxa de sucesso no login** (logins bem-sucedidos / tentativas)
-* **Tempo para login** (mediana)
-* **Taxa de abandono** na tela de login
-* **Taxa de ativação pós-login**: % que conclui **Criar Cavalo** após entrar
-* **Taxa de falhas por credenciais inválidas**
-
----
-
-### 10. Critérios de Aceite (QA)
-
-* [ ] É possível entrar com e-mail e senha válidos.
-* [ ] Ao entrar, usuário é direcionado para **Criar Cavalo** se ainda não completou essa etapa.
-* [ ] Com dados inválidos, o app bloqueia envio e mostra mensagens adequadas.
-* [ ] Ao errar credenciais, o app mostra “E-mail ou senha inválidos.”
-* [ ] Em falha de conexão, o app mostra mensagem de erro genérica e permite tentar novamente.
-* [ ] Existe opção de mostrar/ocultar senha.
-* [ ] Link “Criar conta” leva para a tela de cadastro.
-
----
-
-### 11. Dependências
-
-* Tela de **Cadastro**
-* Fluxo de **Criar Cavalo**
-* Tela inicial do app (Feed)

@@ -1,146 +1,194 @@
 # PRD — Tela de Chat
 
-## 1. Visão geral
+### 1. Visão Geral
 
-A tela de Chat permite que **dois donos** que deram match iniciem e mantenham uma conversa para avançar na negociação/combinação de próximos passos, com **contexto do cavalo do match** sempre acessível.
+A **Tela de Chat** permite que **dois donos** que deram match iniciem e mantenham uma conversa para avançar na negociação/combinação de próximos passos, com **contexto do cavalo do match** sempre acessível.
 
----
+**Problema que resolve:** reduzir fricção para iniciar a conversa após o match e dar continuidade de forma simples, direta e confiável.
 
-## 2. Objetivo do produto
-
-* **Facilitar a primeira mensagem** após o match.
-* **Acelerar a troca de informações essenciais** (localização, disponibilidade, condições).
-* **Manter a experiência simples, confiável e direta**, sem distrações.
+**Objetivo principal e valor entregue:** facilitar a **primeira mensagem**, acelerar a troca de informações essenciais (ex.: localização, disponibilidade, condições) e manter a conversa organizada, com acesso rápido ao perfil do cavalo do match.
 
 ---
 
-## 3. Público-alvo
+### 2. Requisitos
 
-* Usuários que tiveram match e querem conversar: **donos interessados** e **donos anunciantes**.
+#### Acesso ao chat somente com match
 
----
+* **Acesso ao chat somente com match**
 
-## 4. Regras de negócio
+**Descrição:** Garantir que apenas usuários com match possam acessar e conversar, mantendo o chat sempre ancorado a um match existente.
 
-* **Só pode conversar quem deu match**.
-* O chat é **entre donos** (pessoa ↔ pessoa), não “com o cavalo”.
-* **Não existe “perfil indisponível”**: o contexto do match sempre existe para o chat.
-* **Apagar conversa apaga o chat** (histórico removido para o usuário).
+##### Regras de Negócio
 
----
+* **Elegibilidade:** só pode conversar quem deu **match**.
+* **Participantes:** chat é entre **donos (pessoa ↔ pessoa)**, não “com o cavalo”.
+* **Persistência de contexto:** não existe “perfil indisponível” para o match dentro do chat; o contexto do match deve existir para a conversa.
 
-## 5. Escopo
+##### Regras de UI/UX
 
-### 5.1 MVP (incluído)
-
-* Visualizar histórico de mensagens.
-* Enviar mensagem de texto.
-* Ver informações de data/hora (de forma discreta).
-* Acesso rápido ao **perfil do cavalo do match** (para contexto).
-* Sugestões de mensagens prontas para iniciar a conversa.
-* Ação de **apagar conversa** (com confirmação).
-
-### 5.2 Fora do escopo (MVP)
-
-* Envio de fotos, vídeos, áudios ou arquivos.
-* Chamadas de voz/vídeo.
-* “Digitando…”, “visto”, reações, edição de mensagem.
-* Negociação estruturada (proposta/oferta dentro do chat).
+* **Bloqueio de acesso:** tentativas de acesso sem match devem resultar em mensagem de erro amigável e retorno para a origem (ex.: Matches/Inbox).
 
 ---
 
-## 6. Principais cenários de uso
+#### Visualizar histórico de mensagens
 
-### Cenário A — Iniciar conversa (chat vazio)
+* **Visualizar histórico de mensagens**
 
-* Usuário abre o chat pela lista de matches.
-* Vê um estado inicial com:
+**Descrição:** Exibir o histórico da conversa em ordem correta, com separadores por dia e horário discreto.
 
-  * Contexto do cavalo do match.
-  * Sugestões de mensagens rápidas (chips/modelos).
-* Envia a primeira mensagem.
+##### Regras de Negócio
 
-**Resultado esperado:** reduzir fricção e tempo até a 1ª mensagem.
+* **Ordenação:** mensagens devem aparecer na ordem correta (cronológica).
+* **Separação por dia:** inserir separadores quando houver mudança de data.
 
-### Cenário B — Conversa em andamento
+##### Regras de UI/UX
 
-* Usuário abre o chat pela Inbox.
-* Lê o histórico e responde.
-* Mensagens novas aparecem no final da conversa.
-
-**Resultado esperado:** continuidade fluida e sem confusão.
-
-### Cenário C — Apagar conversa
-
-* Usuário escolhe “Apagar conversa” no menu do chat.
-* Confirma a ação.
-* O chat é removido do histórico do usuário.
-
-**Resultado esperado:** dar controle ao usuário com proteção contra exclusões acidentais.
+* **Formato:** mensagens em bolhas.
+* **Horário:** exibir data/hora de forma discreta.
+* **Atualização:** mensagens novas aparecem no final da conversa, mantendo leitura fluida.
 
 ---
 
-## 7. Estrutura da tela (UI/UX)
+#### Enviar mensagem de texto
 
-### Header (topo)
+* **Enviar mensagem de texto**
 
-* Botão voltar.
-* Identificação do interlocutor (nome/avatares).
-* Referência ao match (ex.: “Match: [Nome do cavalo]”).
-* Menu de ações (inclui “Apagar conversa”).
+**Descrição:** Permitir envio de mensagens de texto via campo de composição, com ação clara de “Enviar”.
 
-### Contexto do match
+##### Regras de Negócio
 
-* Um bloco compacto mostrando o cavalo do match (foto + nome, e poucos atributos se útil).
-* Botão “Ver perfil do cavalo”.
+* **Tipo suportado (MVP):** apenas **texto**.
+* **Condição de envio:** apenas usuários participantes do match/conversa podem enviar.
 
-### Área de mensagens
+##### Regras de UI/UX
 
-* Conversa em formato de bolhas.
-* Separadores por dia quando necessário.
-* Horário exibido de forma discreta.
-
-### Campo de mensagem (composer)
-
-* Campo de texto.
-* Botão “Enviar”.
-* No chat vazio, destaque para sugestões de mensagem.
+* **Composer:** campo de texto + botão “Enviar”.
+* **Feedback:** indicar sucesso/erro de envio de forma clara (ex.: mensagem falhou e pode tentar novamente). *(Se não houver regra definida, manter como assunção de UX.)*
 
 ---
 
-## 8. Conteúdo e microcopy (diretrizes)
+#### Estado inicial para chat vazio com sugestões de mensagem
 
-* Linguagem curta, clara e objetiva.
-* Sugestões de mensagem devem incentivar ação e perguntas “de avanço”, por exemplo:
+* **Estado inicial para chat vazio com sugestões de mensagem**
+
+**Descrição:** Quando ainda não houve mensagens, exibir contexto do match e sugestões rápidas para reduzir fricção da primeira mensagem.
+
+##### Regras de Negócio
+
+* **Condição de chat vazio:** quando não existir nenhuma mensagem na conversa, exibir estado inicial.
+
+##### Regras de UI/UX
+
+* **Contexto visível:** exibir bloco compacto do cavalo do match (foto + nome, e poucos atributos se útil).
+* **Sugestões rápidas:** exibir chips/modelos de mensagens para iniciar conversa.
+* **Diretrizes de microcopy (exemplos):**
 
   * “Olá! Tenho interesse. Está disponível para visita?”
   * “Qual a localização e o valor?”
   * “Podemos combinar um horário para conversar melhor?”
+* **Destaque no vazio:** no chat vazio, dar maior destaque para sugestões de mensagem.
 
 ---
 
-## 9. Métricas de sucesso
+#### Acesso rápido ao perfil do cavalo do match
 
-### Métricas principais
+* **Acesso rápido ao perfil do cavalo do match**
 
-* **% de matches que viram conversa iniciada** (pelo menos 1 mensagem).
-* **Tempo até a primeira mensagem** após abrir o chat.
-* **Taxa de resposta** (conversas com resposta em 24h/48h).
+**Descrição:** Permitir que o usuário acesse rapidamente o perfil do cavalo associado ao match para consultar contexto durante a conversa.
 
-### Métricas de qualidade
+##### Regras de Negócio
 
-* Taxa de envio cancelado (mensagens que o usuário digita e não envia).
-* Taxa de apagamento de conversa (monitorar arrependimento/ruído).
-* Satisfação qualitativa (feedback dentro do app, se existir).
+* **Associação:** o chat deve estar sempre ligado ao cavalo do match (contexto consistente).
+
+##### Regras de UI/UX
+
+* **Bloco de contexto:** incluir botão “Ver perfil do cavalo”.
+* **Header (referência):** incluir referência ao match (ex.: “Match: [Nome do cavalo]”).
 
 ---
 
-## 10. Critérios de aceite (MVP)
+#### Apagar conversa
 
-1. Usuário com match consegue **abrir o chat** e **enviar mensagem de texto**.
-2. Chat vazio mostra **contexto do cavalo** e **sugestões de mensagem**.
-3. Usuário consegue acessar o **perfil do cavalo do match** a partir do chat.
-4. Mensagens exibem **ordem correta**, com **separação por dia** quando aplicável.
-5. Existe ação “**Apagar conversa**” com confirmação clara.
-6. Usuários sem match **não** conseguem iniciar conversa com alguém.
+* **Apagar conversa**
 
+**Descrição:** Permitir que o usuário apague a conversa com confirmação, removendo o histórico para aquele usuário.
+
+##### Regras de Negócio
+
+* **Efeito:** apagar conversa apaga o chat (histórico removido **para o usuário**).
+* **Confirmação obrigatória:** antes de apagar, solicitar confirmação para evitar exclusões acidentais.
+
+##### Regras de UI/UX
+
+* **Local da ação:** menu de ações no header inclui “Apagar conversa”.
+* **Confirmação clara:** modal/diálogo com texto objetivo e opções (confirmar/cancelar).
+
+---
+
+#### Estrutura base da tela
+
+* **Estrutura base da tela**
+
+**Descrição:** Garantir elementos mínimos da tela para navegação e entendimento do contexto.
+
+##### Regras de Negócio
+
+* **Navegação:** usuário deve conseguir voltar para a tela anterior (Matches ou Inbox).
+
+##### Regras de UI/UX
+
+* **Header:** botão voltar + identificação do interlocutor (nome/avatares) + referência ao match + menu de ações.
+* **Área de mensagens:** scroll da conversa, bolhas e separadores por dia.
+* **Composer:** campo de texto e botão enviar.
+* **Simplicidade:** evitar distrações e recursos fora do MVP.
+
+---
+
+### 3. Fluxo de Usuário (User Flow)
+
+**Nome do fluxo:** Iniciar conversa (chat vazio)
+
+1. O usuário acessa a **Tela de Chat** pela tela de **Matches**.
+2. O sistema identifica que não há mensagens e exibe estado inicial com:
+
+   * Contexto do cavalo do match
+   * Sugestões de mensagens rápidas
+3. O usuário seleciona uma sugestão ou digita uma mensagem.
+4. O sistema valida a condição de match:
+
+   * **Sucesso:** envia e exibe a primeira mensagem no histórico.
+   * **Falha:** exibe erro (ex.: acesso sem match) e retorna para a origem.
+
+---
+
+**Nome do fluxo:** Conversa em andamento
+
+1. O usuário acessa a **Tela de Chat** pela **Inbox**.
+2. O sistema exibe o histórico em ordem correta, com separadores por dia.
+3. O usuário envia uma nova mensagem.
+4. O sistema:
+
+   * **Sucesso:** adiciona a mensagem ao final.
+   * **Falha:** exibe feedback de erro e permite nova tentativa.
+
+---
+
+**Nome do fluxo:** Apagar conversa
+
+1. O usuário acessa a **Tela de Chat**.
+2. O usuário abre o menu e seleciona “Apagar conversa”.
+3. O sistema solicita confirmação:
+
+   * **Sucesso (confirmou):** remove o histórico para o usuário e retorna para a lista anterior (ex.: Inbox).
+   * **Falha (cancelou):** fecha confirmação e mantém o chat.
+
+---
+
+### 4. Fora do Escopo (Out of Scope)
+
+* Envio de fotos, vídeos, áudios ou arquivos.
+* Chamadas de voz/vídeo.
+* Indicadores como “digitando…”, “visto”, reações e edição de mensagem.
+* Negociação estruturada dentro do chat (proposta/oferta).
+
+---

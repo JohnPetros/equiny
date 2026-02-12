@@ -1,289 +1,234 @@
-## PRD — Tela de Feed (Equiny)
+# PRD — Tela de Feed (Equiny)
 
-### Versão
+### 1. Visão Geral
 
-MVP v1 — Feed de descoberta com swipe (like/dislike) + filtros básicos.
+A **Tela de Feed** é a experiência principal de **descoberta de cavalos** no Equiny, em formato de **cards com swipe** (like/dislike). Ela permite que o usuário avalie perfis com baixa fricção e avance o funil **Feed → Like → Match → Chat**.
 
----
+**Problema que resolve:** o usuário precisa descobrir cavalos compatíveis rapidamente e demonstrar interesse sem esforço.
 
-## Análise de Produto
-
-### Problema resolvido
-
-O usuário precisa **descobrir cavalos compatíveis rapidamente** e demonstrar interesse com baixa fricção (like/dislike). O feed é o principal motor de conversão para match e chat. 
-
-### Valor gerado
-
-* Aumenta **engajamento** (swipes/sessão)
-* Aumenta **conversão** (likes → matches)
-* Aumenta **retensão** (usuário volta para continuar descobrindo)
-
-### Público afetado
-
-* 100% dos usuários ativos após onboarding (momento crítico para “primeiro like” e “primeiro match”).
-
-### Métricas de sucesso
-
-**Primárias**
-
-* Swipes por sessão
-* Like rate = likes / swipes
-* Match rate = matches / likes
-* Time-to-first-like
-* Time-to-first-match
-
-**Secundárias / Guardrails**
-
-* Zero results rate (sessões sem cards)
-* Taxa de erro no feed
-* Latência: tempo para 1º card e para próximo card
+**Objetivo principal e valor entregue:** aumentar a conversão para **match** e acelerar o início de conversas, mantendo o feed confiável (sem repetição, sem perfis inativos e com regras de compatibilidade).
 
 ---
 
-## Escopo
+### 2. Requisitos
 
-### In-scope (MVP)
+#### Cards do feed (conteúdo mínimo)
 
-* Listagem estilo “Tinder”: **cards + swipe + botões Like/Dislike**
-* Acesso ao **detalhe do perfil do cavalo**
-* Filtros do feed (MVP):
+* **Cards do feed (conteúdo mínimo)**
 
-  * Faixa de idade (min/max)
-  * Raça (opcional no MVP, recomendado)
-  * Localização (cidade/estado)
-* Regras: compatibilidade por sexo + não repetir perfis + ocultar inativos
-* Feedback de **match** (quando like mútuo acontecer) e CTA para chat
+**Descrição:** Exibir perfis de cavalos em cards com informações suficientes para decisão rápida.
 
-### Out-of-scope (agora)
+##### Regras de Negócio
 
-* Undo swipe
-* Ranking avançado
-* Distância por GPS
-* Premium/boost
+* **Objeto swipável:** o item do feed é o **perfil do cavalo**.
+* **Foto obrigatória no perfil:** perfis exibidos devem ter **mínimo de 1 foto** (foto principal).
+* **Dados mínimos do card:** o card deve ter dados para renderização (foto principal + atributos básicos).
 
----
+##### Regras de UI/UX (se houver)
 
-## Requisitos Funcionais
-
-### 1) Conteúdo do Card (baseado no Perfil do Cavalo)
-
-Cada card deve exibir informações suficientes para decisão rápida:
-
-**Obrigatório no card**
-
-* Foto principal (obrigatória: perfil precisa de **mín. 1 foto**)
-* Nome do cavalo
-* Sexo (ícone/label)
-* Idade
-* Localização (cidade/estado)
-
-**Opcional no card**
-
-* Raça (se existir)
-* “Ver detalhes” (CTA)
-
-**No detalhe (fora do card, mas acessível do feed)**
-
-* Descrição (opcional)
-* Galeria completa de fotos
-
-> Regra do produto: “o objeto swipável é o perfil do cavalo”. 
+* **Obrigatório no card:** foto principal, nome do cavalo, sexo (ícone/label), idade, localização (cidade/estado).
+* **Opcional no card:** raça (se existir), CTA “Ver detalhes”.
+* **Leitura rápida:** informações do card devem ser apresentadas para decisão em poucos segundos.
 
 ---
 
-### 2) Ações: Like / Dislike
+#### Ações de Like e Dislike (botão + swipe)
 
-* Usuário pode dar Like/Dislike por:
+* **Ações de Like e Dislike (botão + swipe)**
 
-  * Botões
-  * Gestos: swipe direita = Like, swipe esquerda = Dislike
-* Após ação:
+**Descrição:** Permitir que o usuário avalie um card com like/dislike por gesto ou botão, avançando o feed imediatamente.
 
-  * Animar a saída do card
-  * Carregar imediatamente o próximo card
-  * Registrar a decisão (like/dislike)
+##### Regras de Negócio
 
-**Regras de decisão**
+* **Ações suportadas:** Like e Dislike.
+* **Mapeamento de gestos:** swipe direita = Like; swipe esquerda = Dislike.
+* **Registro de decisão:** ao avaliar, registrar a decisão e avançar para o próximo card.
+* **Idempotência:** um par de perfis deve ter **uma única decisão registrada** (evitar duplicidade por taps rápidos/requests simultâneos).
+* **Não repetição:** perfil avaliado não pode reaparecer no feed.
 
-* Um par de perfis só pode ter **uma decisão registrada** (idempotência). 
-* Perfil avaliado não pode reaparecer no feed. 
+##### Regras de UI/UX (se houver)
 
----
-
-### 3) Regras do Feed (Elegibilidade)
-
-O feed deve mostrar apenas cavalos:
-
-* Compatíveis por sexo (macho vê fêmea e vice-versa, conforme regra do produto). 
-* Ativos (perfil inativo não aparece). 
-* Não avaliados anteriormente (sem repetição). 
-* (Recomendado) Excluir cavalos do mesmo dono (evita ruído)
+* **Feedback imediato:** animar saída do card e exibir o próximo sem “travadas”.
+* **Controles redundantes:** manter botões de Like/Dislike além do gesto.
 
 ---
 
-### 4) Filtros
+#### Regras de elegibilidade do feed
 
-**Filtros disponíveis no MVP**
+* **Regras de elegibilidade do feed**
 
-* Idade: min/max
-* Localização: cidade/estado (ou estado apenas, se simplificar)
-* Raça: lista (multi-select)
+**Descrição:** Garantir que o feed mostre apenas perfis válidos e compatíveis com as regras do produto.
 
-**Comportamento**
+##### Regras de Negócio
 
-* Abrir painel/modal de filtros
-* Botões: **Aplicar** e **Limpar**
-* Mostrar indicador “Filtros ativos (N)”
-* Persistir os filtros do usuário (ao menos durante a sessão; ideal: entre sessões)
+* **Compatibilidade por sexo:** exibir apenas cavalos compatíveis conforme regra do produto (ex.: macho vê fêmea e vice-versa).
+* **Perfis ativos:** perfil inativo não aparece no feed.
+* **Sem repetição:** não exibir perfis já avaliados anteriormente.
+* **Mesmo dono (recomendado):** excluir cavalos do **mesmo dono** para reduzir ruído. *(Se for opcional no MVP, tratar como assunção.)*
 
----
+##### Regras de UI/UX (se houver)
 
-### 5) Match (feedback e transição)
-
-* Se Like gerar match (like mútuo):
-
-  * Mostrar feedback (modal/toast de “Deu match!”)
-  * CTA: “Ir para o chat” e opção “Continuar no feed”
-* Match aparece na lista de conexões. 
+* **Consistência:** o usuário não deve perceber “cards repetidos” ao longo da sessão.
 
 ---
 
-## UX — Estados da Tela
+#### Acesso ao detalhe do perfil do cavalo
 
-1. **Loading inicial**
+* **Acesso ao detalhe do perfil do cavalo**
 
-   * Skeleton do card (evita “tela vazia”)
-2. **Estado normal**
+**Descrição:** Permitir abrir o detalhe do cavalo a partir do card, sem perder o contexto do feed.
 
-   * Card(s) disponíveis + botões ativos
-3. **Sem resultados (zero)**
+##### Regras de Negócio
 
-   * Mensagem: “Não encontramos cavalos com seus filtros. Tente ampliar a busca.” 
-   * CTA: “Limpar filtros”
-4. **Fim do feed**
+* **Origem:** o detalhe deve ser acessível a partir do feed para o cavalo exibido no card.
 
-   * Mensagem: “Você chegou ao fim por enquanto.”
-   * CTA: “Ampliar filtros”
-5. **Erro**
+##### Regras de UI/UX (se houver)
 
-   * Mensagem: “Não foi possível carregar o feed.”
-   * CTA: “Tentar novamente”
-6. **Bloqueio por perfil incompleto**
-
-   * Se usuário não tem cavalo cadastrado → redirecionar para criar perfil
-   * Se cavalo sem foto (mín. 1) → bloquear acesso ao feed até adicionar foto (recomendado, porque feed depende disso). 
+* **Conteúdo do detalhe (mínimo):** descrição (opcional) + galeria completa de fotos.
+* **Retorno ao feed:** ao voltar do detalhe, o usuário retorna ao feed mantendo continuidade.
 
 ---
 
-## Análise Técnica
+#### Filtros básicos do feed
 
-### Abordagem de implementação
+* **Filtros básicos do feed**
 
-* Buscar feed em **lotes** (ex.: 20 cards) com cursor/paginação
-* Pré-busca quando restarem poucos (ex.: 5)
-* Swipe com **idempotência** por `(meu_cavalo_id, target_horse_id)`
+**Descrição:** Permitir refinar os resultados do feed com filtros simples e aplicáveis no MVP.
 
-### Impacto na arquitetura (domínios)
+##### Regras de Negócio
 
-* **Discovery**: query do feed + filtros + paginação
-* **Matching**: registrar like/dislike e resolver match
-* **Storage**: fotos (URLs) para card e detalhe
+* **Filtros do MVP:** idade (min/max) e localização (cidade/estado ou estado).
+* **Raça (opcional no MVP):** filtro por raça (multi-select). *(Marcar como “nice-to-have” se não entrar na v1.)*
+* **Aplicar filtros:** aplicar deve recarregar o feed e **resetar paginação/cursor**.
+* **Limpar filtros:** retorna ao padrão do feed.
+* **Persistência:** persistir filtros ao menos durante a sessão (ideal: entre sessões).
 
-### Contratos e interfaces (mínimo necessário)
+##### Regras de UI/UX (se houver)
 
-**GET /feed**
-
-* Parâmetros: filtros + cursor + limit
-* Retorna lista de cards com dados mínimos do perfil (foto principal + atributos básicos)
-
-**POST /swipes**
-
-* `{ target_horse_id, action }`
-* Retorna `{ match: boolean, match_id? }`
+* **Painel/modal:** abrir interface de filtros com botões “Aplicar” e “Limpar”.
+* **Indicador:** mostrar “Filtros ativos (N)”.
 
 ---
 
-## Riscos
+#### Match: feedback e transição para chat
 
-### Técnicos
+* **Match: feedback e transição para chat**
 
-* Repetição de cards por paginação/cursor
-* Duplicidade de swipes por taps rápidos / requests simultâneos
-* Feed “vazio demais” se filtros forem restritivos
+**Descrição:** Quando ocorrer like mútuo, informar o match e oferecer caminho direto para o chat.
 
-### Produto
+##### Regras de Negócio
 
-* Pouca oferta → percepção de app “morto”
-* Filtros demais no MVP → fricção
+* **Condição de match:** like mútuo gera match.
+* **Disponibilização:** match deve aparecer na lista de conexões/matches do usuário.
 
-### Operacionais
+##### Regras de UI/UX (se houver)
 
-* Perfis ruins sem moderação mínima (opcional: denúncia no detalhe)
-
----
-
-## Alternativas
-
-### Mais simples (MVP ultra-enxuto)
-
-* Filtros apenas por idade + estado
-* Card com 1 foto (galeria só no detalhe)
-
-### Mais robusto (pós-MVP)
-
-* Ranking por afinidade/atividade
-* Undo swipe
-* Distância por GPS
+* **Feedback de match:** exibir “Deu match!” (modal/toast).
+* **CTAs:** “Ir para o chat” e opção “Continuar no feed”.
 
 ---
 
-## Critérios de Aceite (Checklist)
+#### Estados do feed (loading, erro, vazio e fim)
 
-**Feed**
+* **Estados do feed (loading, erro, vazio e fim)**
 
-* [ ] Exibe cards com foto + nome + sexo + idade + localização
-* [ ] Não repete perfis já avaliados
-* [ ] Não mostra perfis inativos
-* [ ] Respeita compatibilidade por sexo
+**Descrição:** Tratar estados comuns para evitar sensação de app “quebrado” ou “morto”.
 
-**Swipe**
+##### Regras de Negócio
 
-* [ ] Like/Dislike via botão e gesto
-* [ ] Swipe registra decisão e avança para próximo card
-* [ ] Idempotente: não duplica likes/dislikes
+* **Zero results:** quando não houver cards por causa de filtros, exibir estado apropriado.
+* **Fim do feed:** quando não houver mais cards disponíveis no momento, exibir estado de fim.
+* **Erro:** quando falhar o carregamento, permitir tentativa novamente.
 
-**Filtros**
+##### Regras de UI/UX (se houver)
 
-* [ ] Aplicar filtros recarrega feed e reseta paginação
-* [ ] Limpar filtros volta ao padrão
-* [ ] Mostra “Filtros ativos (N)”
-
-**Match**
-
-* [ ] Like mútuo gera match e feedback
-* [ ] CTA para abrir chat funciona
-
-**Estados**
-
-* [ ] Loading com skeleton
-* [ ] Zero results com CTA “Limpar filtros”
-* [ ] Erro com “Tentar novamente”
-* [ ] Bloqueio se cavalo sem foto (mín. 1)
+* **Loading inicial:** skeleton de card.
+* **Zero results:** mensagem orientando ampliar busca + CTA “Limpar filtros”.
+* **Fim do feed:** mensagem “Você chegou ao fim por enquanto.” + CTA “Ampliar filtros”.
+* **Erro:** “Não foi possível carregar o feed.” + CTA “Tentar novamente”.
 
 ---
 
-## Recomendações
+#### Bloqueio por perfil incompleto (qualidade do feed)
 
-### Caminho sugerido
+* **Bloqueio por perfil incompleto (qualidade do feed)**
 
-* Implementar o feed com **card mínimo + swipe idempotente + filtros básicos** (idade/localização + raça se der)
-* Bloquear feed para perfis sem foto (garante qualidade e evita frustração)
-* Instrumentar analytics desde o início (swipes, filtros, zero results, match)
+**Descrição:** Impedir acesso ao feed quando faltarem pré-requisitos mínimos para a dinâmica do produto.
 
-### Próximos passos
+##### Regras de Negócio
 
-1. Confirmar decisão: **raça entra no MVP ou fica como “nice-to-have”?** (eu colocaria, porque seu modelo já tem)
-2. Definir microcopy e layout do card (ordem das infos)
-3. Especificar eventos de analytics (para medir conversão do feed)
+* **Sem cavalo cadastrado:** bloquear acesso e direcionar para criação de perfil.
+* **Sem foto (mín. 1):** bloquear acesso ao feed até adicionar foto (recomendado).
 
-Se você quiser, eu também escrevo a **spec detalhada da UI** (com componentes e spacing) e um **roteiro de testes de QA** com casos de borda (ex.: mudar filtros no meio do lote, falha no swipe, voltar do detalhe, feed acabando).
+##### Regras de UI/UX (se houver)
+
+* **Orientação clara:** explicar o motivo do bloqueio e indicar ação imediata (ex.: “Adicionar foto” / “Criar perfil”).
+
+---
+
+#### Instrumentação mínima de eventos (analytics)
+
+* **Instrumentação mínima de eventos (analytics)**
+
+**Descrição:** Registrar eventos essenciais para medir funil e saúde do feed.
+
+##### Regras de Negócio
+
+* **Eventos mínimos (sugestão):** swipe, like, dislike, match gerado, abertura de detalhe, aplicar/limpar filtros, zero results, erro de carregamento.
+
+##### Regras de UI/UX (se houver)
+
+* 🚧 Em construção
+
+---
+
+### 3. Fluxo de Usuário (User Flow)
+
+**Nome do fluxo:** Descoberta e swipe (sem filtros)
+
+1. O usuário acessa a **Tela de Feed**.
+2. O sistema carrega o primeiro card:
+
+   * **Sucesso:** exibe card.
+   * **Falha:** exibe estado de erro com “Tentar novamente”.
+3. O usuário executa Like/Dislike (gesto ou botão).
+4. O sistema registra a decisão (idempotente) e avança para o próximo card.
+5. Se houver like mútuo:
+
+   * **Sucesso:** exibe “Deu match!” com CTA “Ir para o chat” ou “Continuar no feed”.
+
+---
+
+**Nome do fluxo:** Aplicar filtros
+
+1. O usuário abre o painel/modal de filtros.
+2. Seleciona idade e localização (e raça, se disponível).
+3. Toca em “Aplicar”.
+4. O sistema recarrega o feed com filtros e reseta paginação:
+
+   * **Sucesso:** exibe cards filtrados.
+   * **Sem resultados:** exibe “Não encontramos cavalos com seus filtros…” + “Limpar filtros”.
+   * **Falha:** exibe estado de erro + “Tentar novamente”.
+
+---
+
+**Nome do fluxo:** Bloqueio por perfil incompleto
+
+1. O usuário acessa a Tela de Feed.
+2. O sistema valida pré-requisitos:
+
+   * **Sem cavalo cadastrado:** redireciona para criar perfil.
+   * **Cavalo sem foto:** bloqueia e direciona para adicionar foto.
+   * **Sucesso:** carrega o feed normalmente.
+
+---
+
+### 4. Fora do Escopo (Out of Scope)
+
+* Undo swipe.
+* Ranking avançado de cards (afinidade/boost).
+* Distância por GPS.
+* Premium/boost.
+* Funcionalidades de moderação/denúncia no detalhe (se não estiverem previstas no MVP).
+
+---
