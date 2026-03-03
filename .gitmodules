@@ -7,3 +7,6 @@
 [submodule "equiny-mobile"]
 	path = equiny-mobile
 	url = https://github.com/JohnPetros/equiny-mobile
+[submodule "equiny-lp"]
+	path = equiny-lp
+	url = https://github.com/JohnPetros/equiny-lp
