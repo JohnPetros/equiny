@@ -1,0 +1,39 @@
+---
+import { footerLinks } from '../data/landing';
+import StoreButtons from './StoreButtons.astro';
+---
+
+<footer class="bg-background border-t border-border pt-20 pb-10">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-12 mb-16">
+      <div>
+        <a href="#top" class="text-2xl font-bold tracking-tight text-text-main hover:text-primary transition-colors inline-block mb-6">
+          Equiny
+        </a>
+        <div class="flex flex-wrap gap-6">
+          {footerLinks.map(link => (
+            <a href={link.href} class="text-text-secondary hover:text-primary transition-colors">
+              {link.label}
+            </a>
+          ))}
+        </div>
+      </div>
+      
+      <div class="shrink-0">
+        <StoreButtons className="scale-90 origin-left md:origin-right" />
+      </div>
+    </div>
+    
+    <div class="pt-8 border-t border-border flex flex-col md:flex-row items-center justify-between gap-4">
+      <p class="text-sm text-text-secondary">
+        &copy; 2023 Equiny App. Todos os direitos reservados.
+      </p>
+      <p class="text-sm font-medium text-text-secondary flex items-center gap-2">
+        Feito para quem ama cavalos.
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="text-primary">
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+        </svg>
+      </p>
+    </div>
+  </div>
+</footer>

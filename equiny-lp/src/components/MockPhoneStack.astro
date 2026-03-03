@@ -1,0 +1,90 @@
+---
+import horse1 from '@/src/assets/horse1.jpg';
+import horse2 from '@/src/assets/horse2.jpg';
+import horse3 from '@/src/assets/horse3.jpg';
+---
+<div class="relative w-full max-w-md mx-auto aspect-[4/5] flex items-center justify-center mt-12 lg:mt-0">
+  <!-- Glow effect behind the mock -->
+  <div class="absolute inset-0 bg-primary/20 blur-[100px] rounded-full mix-blend-screen pointer-events-none"></div>
+
+  <!-- Card 3 (Back) -->
+  <div class="absolute w-72 h-[440px] rounded-[32px] bg-surface border border-border shadow-2xl transform -rotate-6 -translate-x-10 -translate-y-5 opacity-40 overflow-hidden card-enter card-enter-back">
+    <div class="w-full h-full rounded-[32px] overflow-hidden bg-background-alt relative">
+      <img src={horse2.src} alt="Cavalo em destaque" class="absolute inset-0 w-full h-full object-cover" loading="lazy" />
+      <div class="absolute inset-0 bg-gradient-to-b from-primary/10 via-transparent to-background/60"></div>
+    </div>
+  </div>
+
+  <!-- Card 2 (Middle) -->
+  <div class="absolute w-72 h-[440px] rounded-[32px] bg-surface border border-border shadow-2xl transform rotate-3 translate-x-8 -translate-y-2 opacity-70 overflow-hidden card-enter card-enter-middle">
+    <div class="w-full h-full rounded-[32px] overflow-hidden bg-background-alt relative">
+      <img src={horse3.src} alt="Cavalo puro sangue" class="absolute inset-0 w-full h-full object-cover" loading="lazy" />
+      <div class="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-background/60"></div>
+    </div>
+  </div>
+
+  <!-- Card 1 (Front) -->
+  <div class="relative w-80 h-[500px] rounded-[32px] bg-surface border border-border shadow-2xl overflow-hidden z-10 transform transition-transform hover:scale-[1.02] duration-500 card-enter card-enter-front">
+    <div class="absolute inset-0">
+      <img src={horse1.src} alt="Silver Lining" class="absolute inset-0 w-full h-full object-cover" loading="eager" />
+      <div class="absolute inset-0 bg-gradient-to-b from-primary/30 via-transparent to-background/70"></div>
+    </div>
+
+    <!-- Content overlay -->
+    <div class="absolute inset-x-0 bottom-0 p-6 bg-gradient-to-t from-surface via-surface/90 to-transparent">
+      <div class="flex justify-between items-end">
+        <div>
+          <h3 class="text-2xl font-bold text-text-main mb-1">Silver Lining</h3>
+          <p class="text-sm text-text-secondary mb-3">Puro Sangue Lusitano • 6 anos</p>
+          <div class="flex flex-wrap gap-2">
+            <span class="px-2.5 py-1 rounded-full bg-background-alt border border-border text-[10px] font-medium text-text-secondary">Esporte</span>
+            <span class="px-2.5 py-1 rounded-full bg-background-alt border border-border text-[10px] font-medium text-text-secondary">Salto</span>
+            <span class="px-2.5 py-1 rounded-full bg-background-alt border border-border text-[10px] font-medium text-text-secondary">Competição</span>
+          </div>
+        </div>
+        
+        <!-- Like button mock -->
+        <div class="w-12 h-12 rounded-full bg-primary flex items-center justify-center shadow-lg shadow-primary/20 shrink-0">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="text-background">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .card-enter {
+    animation: cardEnter 800ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    transform-origin: 50% 80%;
+  }
+
+  .card-enter-back {
+    animation-delay: 80ms;
+  }
+
+  .card-enter-middle {
+    animation-delay: 180ms;
+  }
+
+  .card-enter-front {
+    animation-delay: 280ms;
+  }
+
+  @keyframes cardEnter {
+    from {
+      opacity: 0;
+      transform: translateY(28px) rotate(-10deg) scale(0.92);
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card-enter {
+      animation: none;
+    }
+  }
+</style>

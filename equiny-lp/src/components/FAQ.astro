@@ -1,0 +1,21 @@
+---
+import { faq } from '../data/landing';
+---
+
+<div class="max-w-3xl mx-auto divide-y divide-border">
+  {faq.map((item, index) => (
+    <details class="group py-6 first:pt-0 last:pb-0">
+      <summary class="flex items-center justify-between cursor-pointer list-none text-lg font-medium text-text-main hover:text-primary transition-colors">
+        {item.question}
+        <span class="ml-6 flex-shrink-0 w-6 h-6 rounded-full bg-surface border border-border flex items-center justify-center text-text-secondary group-open:rotate-180 group-open:bg-primary/10 group-open:text-primary transition-all duration-300">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </span>
+      </summary>
+      <div class="mt-4 text-text-secondary leading-relaxed pr-12">
+        {item.answer}
+      </div>
+    </details>
+  ))}
+</div>

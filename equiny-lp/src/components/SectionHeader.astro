@@ -1,0 +1,18 @@
+---
+interface Props {
+  titleSmall: string;
+  titleLarge: string;
+  align?: 'left' | 'center';
+}
+
+const { titleSmall, titleLarge, align = 'center' } = Astro.props;
+---
+
+<div class={`mb-16 ${align === 'center' ? 'text-center' : 'text-left'}`}>
+  <h2 class="text-xs font-bold tracking-widest text-primary uppercase mb-4">
+    {titleSmall}
+  </h2>
+  <h3 class="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-text-main">
+    {titleLarge}
+  </h3>
+</div>
