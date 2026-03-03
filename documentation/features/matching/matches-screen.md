@@ -1,163 +1,186 @@
-## PRD — Tela de Matches (Conexões)
+# PRD — Tela de Matches (Conexões)
 
-### 1) Visão Geral
+### 1. Visão Geral
 
-A tela de **Matches** apresenta as conexões (likes mútuos) do usuário e funciona como um atalho direto para iniciar conversas. Ao tocar em um match, o app deve abrir a tela de **Conversas** já com aquele match selecionado (abrindo a conversa existente ou preparando uma conversa para iniciar).
+A **Tela de Matches (Conexões)** exibe as conexões (likes mútuos) do usuário e serve como atalho para **iniciar conversas** com o menor atrito possível. Ao tocar em um match, o app navega para a **Tela de Conversas** com aquele match selecionado, abrindo uma conversa existente ou preparando uma nova conversa para iniciar.
 
----
+### 2. Requisitos
 
-## 2) Objetivos
+#### Estrutura e exibição da tela
 
-* Facilitar o próximo passo após o match: **iniciar conversa** com o mínimo de atrito.
-* Destacar **novos matches** para aumentar engajamento imediato.
-* Organizar e exibir claramente todos os matches do usuário.
+* **Header com título e contador de novos**
 
----
+  **Descrição:** Exibir o título “Matches” e um contador opcional “X novos” apenas quando X > 0.
 
-## 3) Não-objetivos (fora do escopo)
+  ##### Regras de Negócio
+
+  * **Exibição do contador:** Mostrar “X novos” somente se existir ao menos 1 match com status “Novo”.
+  * **Atualização do contador:** Ao um match deixar de ser “Novo”, o contador deve refletir o novo total imediatamente.
+
+  ##### Regras de UI/UX (se houver)
+
+  * **Título:** “Matches”.
+  * **Contador:** “X novos” visível apenas quando X > 0.
+  * **Acessibilidade:** Leitor de tela deve anunciar título e, se presente, o contador.
+
+* **Lista única com agrupamento visual “Novos” e “Todos”**
+
+  **Descrição:** Exibir uma lista única com dois agrupamentos visuais: “Novos” (não vistos) no topo e “Todos” (restante) abaixo, podendo ter títulos de seção para clareza.
+
+  ##### Regras de Negócio
+
+  * **Definição de agrupamento:**
+
+    * “Novos” = matches com status “Novo”
+    * “Todos” = matches sem status “Novo”
+  * **Manter lista única:** Deve ser uma única lista (sem abas), apenas com separação visual.
+
+  ##### Regras de UI/UX (se houver)
+
+  * **Títulos de seção:** “Novos” e “Todos” (quando aplicável) para orientar o usuário.
+  * **Scroll/paginação:** Suportar rolagem longa e paginação/scroll infinito se necessário.
+  * **Performance visual:** Placeholder e cache de imagens para evitar “layout shift”.
+
+#### Ordenação e estados
+
+* **Ordenação por data do match (mais recente primeiro)**
+
+  **Descrição:** Ordenar itens dentro de “Novos” e “Todos” por data do match em ordem decrescente.
+
+  ##### Regras de Negócio
+
+  * **Ordem em “Novos”:** data do match desc.
+  * **Ordem em “Todos”:** data do match desc.
+
+  ##### Regras de UI/UX (se houver)
+
+  * **Consistência:** A ordem deve permanecer estável entre recarregamentos (exceto por novos matches recebidos).
+
+* **Regra de “Novo” (persistente e removida apenas ao toque)**
+
+  **Descrição:** Um match é “Novo” até o usuário tocar no item (abrir conversas com aquele match). Apenas visualizar a lista não remove o estado.
+
+  ##### Regras de Negócio
+
+  * **Critério de “Novo”:** status “Novo” permanece até ocorrer o evento de toque no item do match.
+  * **Remoção do “Novo” após toque:** ao tocar:
+
+    * remover badge “Novo”
+    * atualizar contagem “X novos”
+  * **Persistência:** Estado “Novo” deve ser consistente entre sessões e (quando aplicável) entre dispositivos.
+
+  ##### Regras de UI/UX (se houver)
+
+  * **Badge “Novo”:** visível apenas para matches com status “Novo”.
+  * **Acessibilidade:** Badge deve ter contraste suficiente e ser anunciado pelo leitor de tela.
+
+#### Item do match (card/row)
+
+* **Exibição de informações no item do match**
+
+  **Descrição:** Cada item de match deve exibir informações essenciais do cavalo e, opcionalmente, dados complementares.
+
+  ##### Regras de Negócio
+
+  * **Campos obrigatórios:** foto principal (thumbnail), nome, localização (Cidade/UF).
+  * **Campos opcionais:** idade, texto de data relativa (“Conectaram há X dias”).
+  * **Estado visual:**
+
+    * Novo: com badge “Novo”
+    * Visto: sem badge
+
+  ##### Regras de UI/UX (se houver)
+
+  * **Área de toque:** confortável (tap target adequado).
+  * **Leitor de tela:** label combinando nome + localização (e demais infos se exibidas).
+  * **Imagens:** cache + placeholder durante carregamento.
+
+#### Interação principal (navegação para conversas)
+
+* **Toque no match abre Conversas com o match selecionado**
+
+  **Descrição:** Ao tocar em um match, navegar para a Tela de Conversas já com aquele match selecionado.
+
+  ##### Regras de Negócio
+
+  * **Se conversa existir:** abrir a conversa correspondente.
+  * **Se conversa não existir:** abrir uma conversa pronta para iniciar (ex.: composer aberto e contexto do match carregado).
+  * **Atualização do estado “Novo”:** após toque, o match deixa de ser “Novo”.
+
+  ##### Regras de UI/UX (se houver)
+
+  * **Feedback:** indicar carregamento ao abrir conversa (quando necessário) e tratar erros com mensagem amigável.
+  * **Confiabilidade:** falhas ao abrir conversa devem ter fallback (ex.: tentar novamente / mensagem de erro).
+
+#### Empty state
+
+* **Empty state quando não há matches**
+
+  **Descrição:** Se o usuário não tiver matches, mostrar mensagem e CTA para voltar ao feed.
+
+  ##### Regras de Negócio
+
+  * **Condição:** lista vazia (0 matches).
+  * **CTA:** deve navegar para o Feed.
+
+  ##### Regras de UI/UX (se houver)
+
+  * **Mensagem:** “Sem matches ainda”.
+  * **Texto auxiliar:** “Continue no feed para encontrar cavalos compatíveis”.
+  * **CTA primário:** “Ir para o Feed”.
+
+#### Requisitos não funcionais (dentro do template)
+
+* **Performance, confiabilidade e acessibilidade mínimas**
+
+  **Descrição:** Garantir performance de carregamento, consistência do estado “Novo” e acessibilidade básica.
+
+  ##### Regras de Negócio
+
+  * **Performance:** carregamento inicial rápido; suportar paginação/scroll infinito se necessário.
+  * **Confiabilidade:** estado “Novo” persistente entre sessões e (se aplicável) entre dispositivos.
+  * **Taxa de erro:** navegação para Conversas deve tratar falhas e não quebrar o fluxo do usuário.
+
+  ##### Regras de UI/UX (se houver)
+
+  * **Acessibilidade:** contraste no badge “Novo”, suporte a leitor de tela, áreas de toque confortáveis.
+  * **Feedback:** estados de loading/erro/sucesso quando aplicável.
+  * **Compatibilidade:** 🚧 Em construção (não especificado)
+  * **Segurança:** 🚧 Em construção (não especificado)
+
+### 3. Fluxo de Usuário (User Flow)
+
+**Nome do fluxo:** Acessar matches e iniciar conversa
+
+1. O usuário acessa a **Tela de Matches**.
+2. O sistema carrega e exibe a lista em agrupamentos visuais:
+
+   * “Novos” (se houver)
+   * “Todos”
+3. O usuário toca em um item de match.
+4. O sistema valida se existe conversa com aquele match:
+
+   * **Sucesso (conversa existe):** abre a conversa existente já selecionada.
+   * **Sucesso (conversa não existe):** abre uma conversa pronta para iniciar (composer/contexto carregado).
+   * **Falha:** exibe mensagem de erro e permite tentar novamente.
+5. O sistema atualiza o estado do match tocado:
+
+   * remove badge “Novo” (se existia)
+   * atualiza o contador “X novos” (se exibido)
+
+**Nome do fluxo:** Empty state (sem matches)
+
+1. O usuário acessa a **Tela de Matches**.
+2. O sistema valida que não há matches:
+
+   * **Sucesso (0 matches):** exibe empty state.
+3. O usuário toca no CTA “Ir para o Feed”.
+4. O sistema navega para o **Feed**.
+
+### 4. Fora do Escopo (Out of Scope)
 
 * Arquivar/remover/desfazer match.
 * Bloquear/denunciar.
-* Filtros avançados, busca, ordenações complexas além do padrão definido.
+* Filtros avançados, busca e ordenações complexas além do padrão definido.
 
 ---
-
-## 4) Usuários e Casos de Uso
-
-### Persona principal
-
-Usuário que já realizou swipes/likes e obteve **1 ou mais matches**, e quer:
-
-* Ver quem deu match recentemente
-* Começar uma conversa rapidamente
-
-### Casos de uso
-
-1. **Ver novos matches** no topo da lista.
-2. **Tocar em um match** e ir direto para Conversas com aquele match aberto/selecionado.
-3. **Abrir a tela e não ter matches**: ver empty state e voltar ao Feed.
-
----
-
-## 5) Requisitos Funcionais
-
-### 5.1 Estrutura da Tela
-
-* **Header**
-
-  * Título: “Matches”
-  * Contador opcional: “X novos” (exibido apenas se X > 0)
-
-* **Lista única com “Novos” no topo**
-
-  * Uma única lista com **dois agrupamentos visuais**:
-
-    * “Novos” (somente matches não vistos)
-    * “Todos” (restante)
-  * Cada agrupamento pode ter um “título de seção” (ex.: “Novos”, “Todos”) para clareza, mantendo a experiência de lista única.
-
-### 5.2 Ordenação
-
-* “Novos”: ordem decrescente por **data do match** (mais recente primeiro)
-* “Todos”: ordem decrescente por **data do match** (mais recente primeiro)
-
-### 5.3 Item do Match (Card/Row)
-
-Cada item deve exibir:
-
-* Foto principal do cavalo (thumbnail)
-* Nome do cavalo
-* Localização (Cidade/UF)
-* (Opcional) Idade
-* (Opcional) Texto de data relativa: “Conectaram há X dias”
-
-Estados visuais:
-
-* **Novo**: badge/etiqueta “Novo”
-* **Visto**: sem badge
-
-### 5.4 Interação Principal
-
-* Ao tocar em um item de match:
-
-  * Navegar para **Tela de Conversas** com o match selecionado:
-
-    * Se já existir conversa: abrir essa conversa
-    * Se não existir: abrir uma conversa pronta para iniciar (ex.: composer aberto e contexto do match carregado)
-
-### 5.5 Regra de “Novo”
-
-* Um match é considerado **“Novo”** até o usuário **tocar no item** (abrir conversas com aquele match).
-* Após o toque:
-
-  * remover badge “Novo”
-  * reduzir contador “X novos” (se exibido)
-
-> Observação: visualizar a lista **não** remove o estado “Novo” (para não perder a percepção de novidade e não reduzir conversão para primeira conversa).
-
-### 5.6 Empty State
-
-Quando o usuário não possui matches:
-
-* Mensagem: “Sem matches ainda”
-* CTA primário: “Ir para o Feed”
-* Texto auxiliar curto: “Continue no feed para encontrar cavalos compatíveis”
-
----
-
-## 6) Requisitos Não Funcionais
-
-### Performance
-
-* Carregamento inicial da lista deve ser rápido e suportar paginação/scroll infinito se necessário.
-* Exibição de imagens deve usar cache e placeholders (evitar layout shift).
-
-### Confiabilidade
-
-* Estado “Novo” deve ser consistente entre sessões/dispositivos (persistência).
-
-### Acessibilidade (mínimo)
-
-* Itens com áreas de toque confortáveis
-* Contraste suficiente no badge “Novo”
-* Suporte a leitor de tela (nome + localização como label)
-
----
-
-## 7) Dependências e Integrações
-
-* **Serviço de Matching**: fonte de matches e seus metadados
-* **Tela de Conversas**: precisa aceitar parâmetro de navegação para abrir/selecionar um match e resolver criação/abertura da conversa.
-
----
-
-### Métricas (KPIs)
-
-* Conversão **match → conversa iniciada** (ex.: conversa aberta + 1ª mensagem enviada)
-* Time-to-first-message após match
-* CTR nos itens de match (match_item_clicked / matches_screen_viewed)
-* % de novos matches clicados em até 24h
-
-Guardrails:
-
-* Tempo médio de carregamento da tela
-* Taxa de erro ao abrir conversas a partir de match
-
----
-
-## 9) Critérios de Aceite (Checklist)
-
-1. A tela exibe título “Matches” e, se houver, contador “X novos”.
-2. Matches “Novos” aparecem no topo, com badge “Novo” e agrupamento visual.
-3. Ao tocar em um match, o app abre a tela de Conversas já com o match selecionado.
-4. Um match perde o estado “Novo” **após** o toque (não apenas ao visualizar a lista).
-5. Empty state aparece quando não há matches, com CTA “Ir para o Feed”.
-6. Ordenação está correta (mais recentes primeiro em ambas as seções).
-7. Instrumentação de eventos está disparando conforme especificado.
-
----
-
-## 10) Decisões e Trade-offs (registrados)
-
-* **Lista única com agrupamento visual** (Novos/Todos) evita complexidade de abas e mantém clareza.
-* “Novo” só sai ao clicar melhora foco na ação principal (iniciar conversa), mas pode manter “novos” por mais tempo (o que é desejável para conversão).
