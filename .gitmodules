@@ -1,0 +1,9 @@
+[submodule "equiny-iac"]
+	path = equiny-iac
+	url = https://github.com/JohnPetros/equiny-iac
+[submodule "equiny-server"]
+	path = equiny-server
+	url = https://github.com/JohnPetros/equiny-server
+[submodule "equiny-mobile"]
+	path = equiny-mobile
+	url = https://github.com/JohnPetros/equiny-mobile
